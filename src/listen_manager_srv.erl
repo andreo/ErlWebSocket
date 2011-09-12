@@ -41,7 +41,6 @@ start_link(Port) ->
 %%--------------------------------------------------------------------
 init([Port]) ->
     process_flag(trap_exit, true),
-    %% io:format("~p:init ~p~n", [?MODULE, Port]),
     TCPOptions = [binary,
                   {reuseaddr, true},
                   {active, false}
@@ -79,10 +78,7 @@ handle_cast(Message, State) ->
 %% Description: Handling all non call/cast messages
 %%--------------------------------------------------------------------
 handle_info({accept_socket, From, Socket}=_Message, State=#state{lpid=From}) ->
-    %% io:format("handle_info: ~p~n", [Message]),
-    io:format("*DBG* ~p starting child socket=~p~n", [?MODULE, Socket]),
     {ok, Pid} = supervisor:start_child(connection_sup, [Socket]),
-    io:format("*DBG* ~p started child ~p socket=~p~n", [?MODULE, Pid, Socket]),
     ok = gen_tcp:controlling_process(Socket, Pid),
     ok = inet:setopts(Socket, [{packet, http_bin}, {active, true}]),
     {noreply, State};
@@ -107,7 +103,3 @@ terminate(_Reason, _State) ->
 %%--------------------------------------------------------------------
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
-
-%%--------------------------------------------------------------------
-%%% Internal functions
-%%--------------------------------------------------------------------

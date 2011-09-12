@@ -47,7 +47,6 @@ start_link(Socket) ->
 %% initialize. 
 %%--------------------------------------------------------------------
 init([Socket]) ->
-    %% io:format("init ~p~n", [Socket]),
     {ok, recv_http_header, #state_recv_http_header{socket=Socket}}.
 
 %%--------------------------------------------------------------------
@@ -135,7 +134,6 @@ continue_recv_http_header(State=#state_recv_http_header{headers=Headers}, NewHea
 handle_info(Message,
             recv_http_header,
             State=#state_recv_http_header{socket=Socket, headers=Headers}) ->
-    %% io:format("handle_info: ~p~n", [Message]),
     case Message of
         {http, Socket, Error={http_error, _Reason}} ->
             {stop, Error, State};
